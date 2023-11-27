@@ -1,0 +1,18 @@
+version: "3.4"
+
+services:
+  prowlarr:
+    container_name: prowlarr
+    image: bitlessbyte/prowlarr
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - /path/to/data:/config
+    ports:
+      - 9696:9696
+    restart: unless-stopped

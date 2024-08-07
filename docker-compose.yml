@@ -12,7 +12,7 @@ services:
       - PGID=1000
       - TZ=Etc/UTC
     volumes:
-      - /path/to/data:/config
+      - ./config:/config
     ports:
       - 9696:9696
     restart: unless-stopped

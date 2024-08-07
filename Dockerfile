@@ -13,6 +13,8 @@ LABEL maintainer="Roxedus,thespad"
 ARG PROWLARR_BRANCH="master"
 ENV XDG_CONFIG_HOME="/config/xdg"
 
+# copy local files
+COPY root/ /
 
 RUN \
   echo "**** install packages ****" && \
@@ -40,12 +42,13 @@ RUN \
   sed -i "s+_userAgent .*;+_userAgent = \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36\";+g" UserAgentBuilder.cs && \ 
   sed -i "s+_userAgentSimplified .*;+_userAgentSimplified = \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36\";+g" UserAgentBuilder.cs && \ 
   cd /app/prowlarr/Prowlarr/src/NzbDrone.Core/Indexers/Definitions && \
-  sed -i "/^.*Obsolete.*$/d" AudioBookBay.cs && \
+  cp /AudioBookBay.cs . && \
   # Build the application
   cd /app/prowlarr/Prowlarr/ && \
   yarn install && \
-  yarn build --env production=false && \
+  yarn build --env production=true && \
   dotnet msbuild -restore ./src/Prowlarr.sln -p:Configuration=Release -p:Platform=Posix -t:PublishAllRids && \
+  # ./build.sh && \
   # Copy the built application into bin
   cp -r /app/prowlarr/Prowlarr/_output/net6.0/linux-musl-x64/* /app/prowlarr/bin/ && \
   cp -r /app/prowlarr/Prowlarr/_output/UI /app/prowlarr/bin && \
@@ -58,8 +61,6 @@ RUN \
     /tmp/* \
     /var/tmp/*
 
-# copy local files
-COPY root/ /
 
 # ports and volumes
 EXPOSE 9696

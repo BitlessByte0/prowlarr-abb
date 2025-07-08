@@ -25,12 +25,13 @@ public class AudioBookBay : TorrentIndexerBase<NoAuthTorrentBaseSettings>
     public override string Name => "AudioBook Bay";
     public override string[] IndexerUrls => new[]
     {
-        "https://audiobookbay.is/",
-        "https://audiobookbay.se/"
+        "https://audiobookbay.lu/",
+        "http://audiobookbay.fi/",
     };
     public override string[] LegacyUrls => new[]
     {
-        "https://audiobookbay.lu/",
+        "https://audiobookbay.se/",
+        "https://audiobookbay.is/",
         "https://audiobookbay.la/",
         "http://audiobookbay.net/",
         "https://audiobookbay.unblockit.tv/",
@@ -43,14 +44,11 @@ public class AudioBookBay : TorrentIndexerBase<NoAuthTorrentBaseSettings>
         "https://audiobookbay.unblockit.llc/",
         "https://audiobookbay.unblockit.blue/",
         "https://audiobookbay.unblockit.name/",
-        "http://audiobookbay.fi/",
-        "http://audiobookbay.se/",
         "http://audiobookbayabb.com/",
         "https://audiobookbay.unblockit.ist/",
         "https://audiobookbay.unblockit.bet/",
         "https://audiobookbay.unblockit.cat/",
         "https://audiobookbay.unblockit.nz/",
-        "https://audiobookbay.fi/",
         "https://audiobookbay.unblockit.page/",
         "https://audiobookbay.unblockit.pet/",
         "https://audiobookbay.unblockit.ink/",

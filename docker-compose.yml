@@ -1,9 +1,8 @@
-version: "3.4"
-
 services:
   prowlarr:
     container_name: prowlarr
-    image: bitlessbyte/prowlarr
+    image: bitlessbyte/prowlarr:latest
+    command: /app/prowlarr/bin/Prowlarr
     build:
       context: .
       dockerfile: ./Dockerfile

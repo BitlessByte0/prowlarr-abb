@@ -15,46 +15,9 @@ I am not the one who came up with this solution. The original solution was found
 
 # What's next?
 
-Since there are only 3 lines of coded edited from the official docker image(s) this is a drop in replacement. Feel free to change your image and continue on your merry way. The rest of this document is the official README from the linuxserver.io team. The documentation they have provided is fully applicable to this container.
+This is a drop-in replacement to the Linux Server docker image. If you're already using their container, simply change your image over to this one. If you're not running Prowlarr yet, please see the documentation below.
 
-[![linuxserver.io](https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/linuxserver_medium.png)](https://linuxserver.io)
-
-[![Blog](https://img.shields.io/static/v1.svg?color=94398d&labelColor=555555&logoColor=ffffff&style=for-the-badge&label=linuxserver.io&message=Blog)](https://blog.linuxserver.io "all the things you can do with our containers including How-To guides, opinions and much more!")
-[![Discord](https://img.shields.io/discord/354974912613449730.svg?color=94398d&labelColor=555555&logoColor=ffffff&style=for-the-badge&label=Discord&logo=discord)](https://discord.gg/YWrKVTn "realtime support / chat with the community and the team.")
-[![Discourse](https://img.shields.io/discourse/https/discourse.linuxserver.io/topics.svg?color=94398d&labelColor=555555&logoColor=ffffff&style=for-the-badge&logo=discourse)](https://discourse.linuxserver.io "post on our community forum.")
-[![Fleet](https://img.shields.io/static/v1.svg?color=94398d&labelColor=555555&logoColor=ffffff&style=for-the-badge&label=linuxserver.io&message=Fleet)](https://fleet.linuxserver.io "an online web interface which displays all of our maintained images.")
-[![GitHub](https://img.shields.io/static/v1.svg?color=94398d&labelColor=555555&logoColor=ffffff&style=for-the-badge&label=linuxserver.io&message=GitHub&logo=github)](https://github.com/linuxserver "view the source for all of our repositories.")
-[![Open Collective](https://img.shields.io/opencollective/all/linuxserver.svg?color=94398d&labelColor=555555&logoColor=ffffff&style=for-the-badge&label=Supporters&logo=open%20collective)](https://opencollective.com/linuxserver "please consider helping us by either donating or contributing to our budget")
-
-The [LinuxServer.io](https://linuxserver.io) team brings you another container release featuring:
-
-- regular and timely application updates
-- easy user mappings (PGID, PUID)
-- custom base image with s6 overlay
-- weekly base OS updates with common layers across the entire LinuxServer.io ecosystem to minimise space usage, down time and bandwidth
-- regular security updates
-
-Find us at:
-
-- [Blog](https://blog.linuxserver.io) - all the things you can do with our containers including How-To guides, opinions and much more!
-- [Discord](https://discord.gg/YWrKVTn) - realtime support / chat with the community and the team.
-- [Discourse](https://discourse.linuxserver.io) - post on our community forum.
-- [Fleet](https://fleet.linuxserver.io) - an online web interface which displays all of our maintained images.
-- [GitHub](https://github.com/linuxserver) - view the source for all of our repositories.
-- [Open Collective](https://opencollective.com/linuxserver) - please consider helping us by either donating or contributing to our budget
-
-# [linuxserver/prowlarr](https://github.com/linuxserver/docker-prowlarr)
-
-[![Scarf.io pulls](https://scarf.sh/installs-badge/linuxserver-ci/linuxserver%2Fprowlarr?color=94398d&label-color=555555&logo-color=ffffff&style=for-the-badge&package-type=docker)](https://scarf.sh/gateway/linuxserver-ci/docker/linuxserver%2Fprowlarr)
-[![GitHub Stars](https://img.shields.io/github/stars/linuxserver/docker-prowlarr.svg?color=94398d&labelColor=555555&logoColor=ffffff&style=for-the-badge&logo=github)](https://github.com/linuxserver/docker-prowlarr)
-[![GitHub Release](https://img.shields.io/github/release/linuxserver/docker-prowlarr.svg?color=94398d&labelColor=555555&logoColor=ffffff&style=for-the-badge&logo=github)](https://github.com/linuxserver/docker-prowlarr/releases)
-[![GitHub Package Repository](https://img.shields.io/static/v1.svg?color=94398d&labelColor=555555&logoColor=ffffff&style=for-the-badge&label=linuxserver.io&message=GitHub%20Package&logo=github)](https://github.com/linuxserver/docker-prowlarr/packages)
-[![GitLab Container Registry](https://img.shields.io/static/v1.svg?color=94398d&labelColor=555555&logoColor=ffffff&style=for-the-badge&label=linuxserver.io&message=GitLab%20Registry&logo=gitlab)](https://gitlab.com/linuxserver.io/docker-prowlarr/container_registry)
-[![Quay.io](https://img.shields.io/static/v1.svg?color=94398d&labelColor=555555&logoColor=ffffff&style=for-the-badge&label=linuxserver.io&message=Quay.io)](https://quay.io/repository/linuxserver.io/prowlarr)
-[![Docker Pulls](https://img.shields.io/docker/pulls/linuxserver/prowlarr.svg?color=94398d&labelColor=555555&logoColor=ffffff&style=for-the-badge&label=pulls&logo=docker)](https://hub.docker.com/r/linuxserver/prowlarr)
-[![Docker Stars](https://img.shields.io/docker/stars/linuxserver/prowlarr.svg?color=94398d&labelColor=555555&logoColor=ffffff&style=for-the-badge&label=stars&logo=docker)](https://hub.docker.com/r/linuxserver/prowlarr)
-[![Jenkins Build](https://img.shields.io/jenkins/build?labelColor=555555&logoColor=ffffff&style=for-the-badge&jobUrl=https%3A%2F%2Fci.linuxserver.io%2Fjob%2FDocker-Pipeline-Builders%2Fjob%2Fdocker-prowlarr%2Fjob%2Fmain%2F&logo=jenkins)](https://ci.linuxserver.io/job/Docker-Pipeline-Builders/job/docker-prowlarr/job/main/)
-[![LSIO CI](https://img.shields.io/badge/dynamic/yaml?color=94398d&labelColor=555555&logoColor=ffffff&style=for-the-badge&label=CI&query=CI&url=https%3A%2F%2Fci-tests.linuxserver.io%2Flinuxserver%2Fprowlarr%2Flatest%2Fci-status.yml)](https://ci-tests.linuxserver.io/linuxserver/prowlarr/latest/index.html)
+# [bitlessbyte/prowlarr](https://github.com/BitlessByte0/prowlarr-abb)
 
 [Prowlarr](https://github.com/Prowlarr/Prowlarr) is a indexer manager/proxy built on the popular arr .net/reactjs base stack to integrate with your various PVR apps. Prowlarr supports both Torrent Trackers and Usenet Indexers. It integrates seamlessly with Sonarr, Radarr, Lidarr, and Readarr offering complete management of your indexers with no per app Indexer setup required (we do it all).
 
@@ -62,16 +25,14 @@ Find us at:
 
 ## Supported Architectures
 
-We utilise the docker manifest for multi-platform awareness. More information is available from docker [here](https://github.com/docker/distribution/blob/master/docs/spec/manifest-v2-2.md#manifest-list) and our announcement [here](https://blog.linuxserver.io/2019/02/21/the-lsio-pipeline-project/).
-
-Simply pulling `lscr.io/linuxserver/prowlarr:latest` should retrieve the correct image for your arch, but you can also pull specific arch images via tags.
+Currently, only x86-64 architecture is supported. Please feel free to use the Dockerfile to generate your own version.
 
 The architectures supported by this image are:
 
 | Architecture | Available | Tag                     |
 | :----------: | :-------: | ----------------------- |
 |    x86-64    |    ✅     | amd64-\<version tag\>   |
-|    arm64     |    ✅     | arm64v8-\<version tag\> |
+|    arm64     |    ❌     | arm64-\<version tag\> |
 |    armhf     |    ❌     |                         |
 
 ## Version Tags
@@ -82,7 +43,7 @@ This image provides various versions that are available via tags. Please read th
 | :-----: | :-------: | ------------------------------------------- |
 | latest  |    ✅     | Prowlarr stable releases                    |
 | develop |    ✅     | Prowlarr releases from their develop branch |
-| nightly |    ✅     | Prowlarr releases from their nightly branch |
+| nightly |    ❌     | Prowlarr releases from their nightly branch |
 
 ## Application Setup
 
@@ -101,7 +62,7 @@ Here are some example snippets to help you get started creating a container.
 version: "2.1"
 services:
   prowlarr:
-    image: lscr.io/linuxserver/prowlarr:latest
+    image: bitlessbyte/prowlarr:latest
     container_name: prowlarr
     environment:
       - PUID=1000
@@ -125,7 +86,7 @@ docker run -d \
   -p 9696:9696 \
   -v /path/to/data:/config \
   --restart unless-stopped \
-  lscr.io/linuxserver/prowlarr:latest
+  bitlessbyte/prowlarr:latest
 
 ```
 
@@ -184,7 +145,7 @@ We publish various [Docker Mods](https://github.com/linuxserver/docker-mods) to 
 - container version number
   - `docker inspect -f '{{ index .Config.Labels "build_version" }}' prowlarr`
 - image version number
-  - `docker inspect -f '{{ index .Config.Labels "build_version" }}' lscr.io/linuxserver/prowlarr:latest`
+  - `docker inspect -f '{{ index .Config.Labels "build_version" }}' bitlessbyte/prowlarr:latest`
 
 ## Updating Info
 
@@ -202,7 +163,7 @@ Below are the instructions for updating containers:
 
 ### Via Docker Run
 
-- Update the image: `docker pull lscr.io/linuxserver/prowlarr:latest`
+- Update the image: `docker pull bitlessbyte/prowlarr:latest`
 - Stop the running container: `docker stop prowlarr`
 - Delete the container: `docker rm prowlarr`
 - Recreate a new container with the same docker run parameters as instructed above (if mapped correctly to a host folder, your `/config` folder and settings will be preserved)
@@ -232,12 +193,12 @@ Below are the instructions for updating containers:
 If you want to make local modifications to these images for development purposes or just to customize the logic:
 
 ```bash
-git clone https://github.com/linuxserver/docker-prowlarr.git
-cd docker-prowlarr
+git clone https://github.com/BitlessByte0/docker-prowlarr-abb.git
+cd docker-prowlarr-abb
 docker build \
   --no-cache \
   --pull \
-  -t lscr.io/linuxserver/prowlarr:latest .
+  -t bitlessbyte/prowlarr:latest .
 ```
 
 The ARM variants can be built on x86_64 hardware using `multiarch/qemu-user-static`
@@ -248,8 +209,13 @@ docker run --rm --privileged multiarch/qemu-user-static:register --reset
 
 Once registered you can define the dockerfile to use with `-f Dockerfile.aarch64`.
 
+## Credits
+Most of this documentation is thanks to the team over at LinuxServer.io
+
 ## Versions
 
+- **07.07.25:** - Updated Dockerfile so that both Prowlarr's `master` and `develop` (which changes to .net8.0) branches can be built.
+- **08.29.23:** - Change User-Agent to bypass AudioBookBay's block.
 - **06.06.23:** - Rebase master to Alpine 3.18, deprecate armhf as per [https://www.linuxserver.io/armhf](https://www.linuxserver.io/armhf).
 - **03.01.23:** - Publish stable release.
 - **20.02.22:** - Rebase develop branch to Alpine.

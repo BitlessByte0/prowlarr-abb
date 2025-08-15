@@ -135,9 +135,12 @@ jobs:
         IMAGE_NAME="bitlessbyte/prowlarr" 
         TAG_NAME="${{ matrix.tag_name }}"
         
+        # Remove any existing manifest (ignore errors if it doesn't exist)
+        docker manifest rm $IMAGE_NAME:$TAG_NAME || true
+        
         # Create multi-arch manifest
         docker manifest create $IMAGE_NAME:$TAG_NAME \
-          --ammend $IMAGE_NAME:$TAG_NAME-amd64 \
-          --ammend $IMAGE_NAME:$TAG_NAME-arm64
+          $IMAGE_NAME:$TAG_NAME-amd64 \
+          $IMAGE_NAME:$TAG_NAME-arm64
         
         docker manifest push $IMAGE_NAME:$TAG_NAME

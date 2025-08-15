@@ -133,8 +133,8 @@ jobs:
         TAG_NAME="${{ matrix.tag_name }}"
 
         # Ensure both architecture-specific images are available
-        docker pull $IMAGE_NAME:$TAG_NAME-amd64 || true
-        docker pull $IMAGE_NAME:$TAG_NAME-arm64 || true
+        docker pull --platform linux/amd64 $IMAGE_NAME:$TAG_NAME-amd64 || true
+        docker pull --platform linux/arm64 $IMAGE_NAME:$TAG_NAME-arm64 || true
 
         # Remove any existing manifest (ignore errors if it doesn't exist)
         docker manifest rm $IMAGE_NAME:$TAG_NAME || true

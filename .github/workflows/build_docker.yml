@@ -137,7 +137,7 @@ jobs:
         
         # Create multi-arch manifest
         docker manifest create $IMAGE_NAME:$TAG_NAME \
-          $IMAGE_NAME:$TAG_NAME-amd64 \
-          $IMAGE_NAME:$TAG_NAME-arm64
+          --ammend $IMAGE_NAME:$TAG_NAME-amd64 \
+          --ammend $IMAGE_NAME:$TAG_NAME-arm64
         
         docker manifest push $IMAGE_NAME:$TAG_NAME

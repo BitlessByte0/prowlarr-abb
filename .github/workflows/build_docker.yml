@@ -127,22 +127,17 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Create and push multi-arch manifest
-      if: steps.should-build.outputs.should_build == 'true'
       run: |
         IMAGE_NAME="bitlessbyte/prowlarr" 
         TAG_NAME="${{ matrix.tag_name }}"
 
-        # Ensure both architecture-specific images are available
         docker pull --platform linux/amd64 $IMAGE_NAME:$TAG_NAME-amd64 || true
         docker pull --platform linux/arm64 $IMAGE_NAME:$TAG_NAME-arm64 || true
 
-        # Remove any existing manifest (ignore errors if it doesn't exist)
         docker manifest rm $IMAGE_NAME:$TAG_NAME || true
 
-        # Create multi-arch manifest
         docker manifest create $IMAGE_NAME:$TAG_NAME \
           $IMAGE_NAME:$TAG_NAME-amd64 \
           $IMAGE_NAME:$TAG_NAME-arm64
 
-        # Push the manifest to Docker Hub
-        docker manifest push $IMAGE_NAME:$TAG_NAME
+       docker manifest push $IMAGE_NAME:$TAG_NAME

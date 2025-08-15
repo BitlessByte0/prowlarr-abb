@@ -22,7 +22,7 @@ jobs:
         tag_config:
           - tag_name: latest
             branch_arg: master
-          - tag_name: develop  
+          - tag_name: develop
             branch_arg: develop
         include:
           - architecture: amd64
@@ -40,7 +40,6 @@ jobs:
       id: should-build
       run: |
         if [[ "${{ github.event_name }}" == "repository_dispatch" ]]; then
-          # For external repo triggers, only build matching branch
           EXTERNAL_BRANCH="${{ github.event.client_payload.branch }}"
           if [[ "$EXTERNAL_BRANCH" == "development" ]]; then
             EXTERNAL_BRANCH="develop"
@@ -53,7 +52,6 @@ jobs:
             echo "should_build=false" >> $GITHUB_OUTPUT
           fi
         else
-          # For regular pushes, build both configs
           echo "should_build=true" >> $GITHUB_OUTPUT
         fi
 
@@ -85,11 +83,11 @@ jobs:
         file: ${{ matrix.dockerfile }}
         platforms: ${{ matrix.platform }}
         push: ${{ github.event_name != 'pull_request' }}
-        tags: ${{ steps.meta.outputs.tags }}
+        tags: |
+          bitlessbyte/prowlarr:${{ matrix.tag_config.tag_name }}-${{ matrix.architecture }}
         labels: ${{ steps.meta.outputs.labels }}
         build-args: |
-          BRANCH=${{ matrix.tag_config.branch_arg }}
-        outputs: type=image,name=target
+          PROWLARR_BRANCH=${{ matrix.tag_config.branch_arg }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
@@ -106,7 +104,6 @@ jobs:
       id: should-build
       run: |
         if [[ "${{ github.event_name }}" == "repository_dispatch" ]]; then
-          # For external triggers, only build matching manifest
           EXTERNAL_BRANCH="${{ github.event.client_payload.branch }}"
           if [[ "$EXTERNAL_BRANCH" == "development" ]]; then
             EXTERNAL_BRANCH="develop"
@@ -119,7 +116,6 @@ jobs:
             echo "should_build=false" >> $GITHUB_OUTPUT
           fi
         else
-          # For regular pushes, build both manifests
           echo "should_build=true" >> $GITHUB_OUTPUT
         fi
 
@@ -135,13 +131,14 @@ jobs:
       run: |
         IMAGE_NAME="bitlessbyte/prowlarr" 
         TAG_NAME="${{ matrix.tag_name }}"
-        
+
         # Remove any existing manifest (ignore errors if it doesn't exist)
         docker manifest rm $IMAGE_NAME:$TAG_NAME || true
-        
+
         # Create multi-arch manifest
         docker manifest create $IMAGE_NAME:$TAG_NAME \
           $IMAGE_NAME:$TAG_NAME-amd64 \
           $IMAGE_NAME:$TAG_NAME-arm64
-        
+
+        # Push the manifest to Docker Hub
         docker manifest push $IMAGE_NAME:$TAG_NAME

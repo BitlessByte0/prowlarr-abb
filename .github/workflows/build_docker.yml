@@ -89,6 +89,7 @@ jobs:
         labels: ${{ steps.meta.outputs.labels }}
         build-args: |
           BRANCH=${{ matrix.tag_config.branch_arg }}
+        outputs: type=image,name=target
         cache-from: type=gha
         cache-to: type=gha,mode=max
 

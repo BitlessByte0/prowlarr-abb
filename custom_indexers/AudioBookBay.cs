@@ -231,7 +231,7 @@ public class AudioBookBayRequestGenerator : IIndexerRequestGenerator
 
         var parameters = new NameValueCollection();
 
-        term = Regex.Replace(term, @"[\W]+", " ").Trim();
+        term = Regex.Replace(term, @"[\W]+", " ").Trim().ToLower();
 
         if (term.IsNotNullOrWhiteSpace())
         {

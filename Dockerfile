@@ -88,4 +88,3 @@ ENV TZ=UTC \
 
 EXPOSE 9696
 VOLUME /config
-

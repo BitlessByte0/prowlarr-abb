@@ -132,7 +132,7 @@ jobs:
     - name: Create and push multi-arch manifest
       if: steps.should-build.outputs.should_build == 'true'
       run: |
-        IMAGE_NAME="your-dockerhub-username/your-image-name"  # Change this to your image name
+        IMAGE_NAME="bitlessbyte/prowlarr" 
         TAG_NAME="${{ matrix.tag_name }}"
         
         # Create multi-arch manifest

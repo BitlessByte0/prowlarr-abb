@@ -9,6 +9,10 @@ on:
     types: [docker-build-external]
   workflow_dispatch: # Allow manual triggering
 
+permissions:
+  contents: write  # Needed to commit cache files
+  actions: write   # Needed to trigger repository_dispatch
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -52,10 +56,6 @@ jobs:
           # For regular pushes, build both configs
           echo "should_build=true" >> $GITHUB_OUTPUT
         fi
-
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
 
     - name: Set up Docker Buildx
       if: steps.should-build.outputs.should_build == 'true'

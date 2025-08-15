@@ -1,0 +1,77 @@
+name: Monitor External Repository
+
+on:
+  schedule:
+    # Check once daily at 6:00 AM UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  check-for-updates:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        branch: [master, development]
+    
+    steps:
+      - name: Checkout current repo
+        uses: actions/checkout@v4
+
+      - name: Get last known commit from external repo
+        id: last-commit
+        run: |
+          # Create cache directory if it doesn't exist
+          mkdir -p .github/cache
+          
+          # Get the last known commit hash for this branch
+          if [ -f ".github/cache/last-${{ matrix.branch }}-commit.txt" ]; then
+            echo "last_commit=$(cat .github/cache/last-${{ matrix.branch }}-commit.txt)" >> $GITHUB_OUTPUT
+          else
+            echo "last_commit=" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Get latest commit from external repo
+        id: latest-commit
+        run: |
+          # Replace with the actual external repository
+          EXTERNAL_REPO="Prowlarr/Prowlarr"
+          
+          # Get the latest commit hash for the branch
+          LATEST_COMMIT=$(curl -s \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/$EXTERNAL_REPO/branches/${{ matrix.branch }}" | \
+            jq -r '.commit.sha')
+          
+          echo "latest_commit=$LATEST_COMMIT" >> $GITHUB_OUTPUT
+
+      - name: Check if there's a new commit
+        id: check-update
+        run: |
+          if [ "${{ steps.last-commit.outputs.last_commit }}" != "${{ steps.latest-commit.outputs.latest_commit }}" ]; then
+            echo "needs_build=true" >> $GITHUB_OUTPUT
+            echo "New commit detected in ${{ matrix.branch }}: ${{ steps.latest-commit.outputs.latest_commit }}"
+          else
+            echo "needs_build=false" >> $GITHUB_OUTPUT
+            echo "No new commits in ${{ matrix.branch }}"
+          fi
+
+      - name: Update last known commit
+        if: steps.check-update.outputs.needs_build == 'true'
+        run: |
+          echo "${{ steps.latest-commit.outputs.latest_commit }}" > .github/cache/last-${{ matrix.branch }}-commit.txt
+          
+          # Commit the updated cache file
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .github/cache/last-${{ matrix.branch }}-commit.txt
+          git commit -m "Update last known commit for ${{ matrix.branch }}: ${{ steps.latest-commit.outputs.latest_commit }}" || exit 0
+          git push
+
+      - name: Trigger Docker build
+        if: steps.check-update.outputs.needs_build == 'true'
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          event-type: external-repo-update
+          client-payload: '{"branch": "${{ matrix.branch }}", "external_commit": "${{ steps.latest-commit.outputs.latest_commit }}"}'

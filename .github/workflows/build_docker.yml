@@ -1,18 +1,3 @@
-name: Build Docker Images
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  repository_dispatch:
-    types: [docker-build-external]
-  workflow_dispatch: # Allow manual triggering
-
-permissions:
-  contents: write  # Needed to commit cache files
-  actions: write   # Needed to trigger repository_dispatch
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -82,12 +67,12 @@ jobs:
         context: .
         file: ${{ matrix.dockerfile }}
         platforms: ${{ matrix.platform }}
-        push: ${{ github.event_name != 'pull_request' }}
+        push: true  # Ensure it pushes the image
         tags: |
-          bitlessbyte/prowlarr:${{ matrix.tag_config.tag_name }}-${{ matrix.architecture }}
+          bitlessbyte/prowlarr:${{ matrix.tag_config.tag_name }}-${{ matrix.architecture }}  # Correct per-architecture tag
         labels: ${{ steps.meta.outputs.labels }}
         build-args: |
-          PROWLARR_BRANCH=${{ matrix.tag_config.branch_arg }}
+          BRANCH=${{ matrix.tag_config.branch_arg }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
@@ -131,6 +116,10 @@ jobs:
       run: |
         IMAGE_NAME="bitlessbyte/prowlarr" 
         TAG_NAME="${{ matrix.tag_name }}"
+
+        # Ensure both architecture-specific images are available
+        docker pull $IMAGE_NAME:$TAG_NAME-amd64 || true
+        docker pull $IMAGE_NAME:$TAG_NAME-arm64 || true
 
         # Remove any existing manifest (ignore errors if it doesn't exist)
         docker manifest rm $IMAGE_NAME:$TAG_NAME || true

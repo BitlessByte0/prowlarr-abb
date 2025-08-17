@@ -14,17 +14,14 @@
 | :----: | --- |
 | `Dockerfile` | Dockerfile used to build amd64 images |
 | `Dockerfile.aarch64` | Dockerfile used to build 64bit ARM architectures |
-| `Dockerfile.armhf` | Dockerfile used to build 32bit ARM architectures |
 | `Jenkinsfile` | This file is a product of our builder and should not be edited directly. This is used to build the image |
 | `jenkins-vars.yml` | This file is used to generate the `Jenkinsfile` mentioned above, it only affects the build-process |
 | `package_versions.txt` | This file is generated as a part of the build-process and should not be edited directly. It lists all the installed packages and their versions |
 | `README.md` | This file is a product of our builder and should not be edited directly. This displays the readme for the repository and image registries |
-| `readme-vars.yml` | This file is used to generate the `README.md` |
 
 ## Readme
 
-If you would like to change our readme, please __**do not**__ directly edit the readme, as it is auto-generated on each commit.
-Instead edit the [readme-vars.yml](https://github.com/linuxserver/docker-prowlarr/edit/main/readme-vars.yml).
+If you would like to change our readme, please __**do**__ directly edit the readme.
 
 These variables are used in a template for our [Jenkins Builder](https://github.com/linuxserver/docker-jenkins-builder) as part of an ansible play.
 Most of these variables are also carried over to [docs.linuxserver.io](https://docs.linuxserver.io/images/docker-prowlarr)

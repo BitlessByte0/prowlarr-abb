@@ -1,0 +1,66 @@
+name: Monitor Official Prowlarr Repository
+on:
+  schedule:
+    - cron: '*/30 * * * *'   # every 30 min; adjust as you like
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check-for-updates:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        branch: [master, develop]
+
+    steps:
+      - name: Get latest commit from external repo
+        id: latest
+        run: |
+          set -euo pipefail
+          EXTERNAL_REPO="Prowlarr/Prowlarr"
+          BRANCH="${{ matrix.branch }}"
+          LATEST_COMMIT=$(curl -s \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/$EXTERNAL_REPO/branches/$BRANCH" | jq -r '.commit.sha')
+          if [ "$LATEST_COMMIT" = "null" ] || [ -z "$LATEST_COMMIT" ]; then
+            echo "Could not resolve latest commit for $BRANCH" >&2
+            exit 1
+          fi
+          echo "sha=$LATEST_COMMIT" >> $GITHUB_OUTPUT
+
+      - name: Restore seen-commit cache
+        id: cache-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: .seen-commits/${{ matrix.branch }}
+          key: last-${{ matrix.branch }}-${{ steps.latest.outputs.sha }}
+          restore-keys: last-${{ matrix.branch }}-
+
+      - name: Decide if build is needed
+        id: decide
+        run: |
+          if [ "${{ steps.cache-restore.outputs.cache-hit }}" = "true" ]; then
+            echo "needs_build=false" >> $GITHUB_OUTPUT
+          else
+            echo "needs_build=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Save new seen-commit cache
+        if: steps.decide.outputs.needs_build == 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .seen-commits/${{ matrix.branch }}
+          key: last-${{ matrix.branch }}-${{ steps.latest.outputs.sha }}
+
+      - name: Trigger Docker build
+        if: steps.decide.outputs.needs_build == 'true'
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          event-type: docker-build-external
+          client-payload: |
+            {"branch":"${{ matrix.branch }}","external_commit":"${{ steps.latest.outputs.sha }}"}

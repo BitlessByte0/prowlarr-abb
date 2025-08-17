@@ -58,11 +58,10 @@ jobs:
           key: last-${{ matrix.branch }}-${{ steps.latest.outputs.sha }}
 
       - name: Trigger Docker build
-        if: steps.decide.outputs.needs_build == 'true'
+        if: steps.check-update.outputs.needs_build == 'true'
         uses: peter-evans/repository-dispatch@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.ACTIONS_PAT }}
           repository: ${{ github.repository }}
           event-type: docker-build-external
-          client-payload: |
-            {"branch":"${{ matrix.branch }}","external_commit":"${{ steps.latest.outputs.sha }}"}
+          client-payload: '{"branch": "${{ matrix.branch }}", "external_commit": "${{ steps.latest-commit.outputs.latest_commit }}"}'

@@ -73,7 +73,7 @@ jobs:
         if: steps.check-update.outputs.needs_build == 'true'
         uses: peter-evans/repository-dispatch@v3
         with:
-          token: ${{ secrets.PAT_REPO_ACCESS }}
+          token: ${{ secrets.ACTIONS_PAT }}
           repository: ${{ github.repository }}
           event-type: external-repo-update
           client-payload: '{"branch": "${{ matrix.branch }}", "external_commit": "${{ steps.latest-commit.outputs.latest_commit }}"}'

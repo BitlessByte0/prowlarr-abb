@@ -12,24 +12,27 @@ jobs:
     strategy:
       matrix:
         branch: [master, development]
-    
+
     steps:
       - name: Checkout current repo
         uses: actions/checkout@v4
 
+      # Restore cache of last known commit
       - name: Restore commit cache
         id: cache
-        uses: actions/cache@v4
+        uses: actions/cache@v3
         with:
           path: .commit-cache
-          key: commit-${{ matrix.branch }}
+          key: commit-${{ matrix.branch }}-${{ github.run_id }}
+          restore-keys: |
+            commit-${{ matrix.branch }}-
 
       - name: Get last known commit from cache
         id: last-commit
         run: |
           mkdir -p .commit-cache
-          if [ -f ".commit-cache/last-${{ matrix.branch }}.txt" ]; then
-            echo "last_commit=$(cat .commit-cache/last-${{ matrix.branch }}.txt)" >> $GITHUB_OUTPUT
+          if [ -f ".commit-cache/last-${{ matrix.branch }}-commit.txt" ]; then
+            echo "last_commit=$(cat .commit-cache/last-${{ matrix.branch }}-commit.txt)" >> $GITHUB_OUTPUT
           else
             echo "last_commit=" >> $GITHUB_OUTPUT
           fi
@@ -55,19 +58,18 @@ jobs:
             echo "No new commits in ${{ matrix.branch }}"
           fi
 
-      - name: Update commit cache
+      - name: Update last known commit
         if: steps.check-update.outputs.needs_build == 'true'
         run: |
-          mkdir -p .commit-cache
-          echo "${{ steps.latest-commit.outputs.latest_commit }}" > .commit-cache/last-${{ matrix.branch }}.txt
+          echo "${{ steps.latest-commit.outputs.latest_commit }}" > .commit-cache/last-${{ matrix.branch }}-commit.txt
 
-      - name: Save updated cache
+      # Save updated cache
+      - name: Save commit cache
         if: steps.check-update.outputs.needs_build == 'true'
-        uses: actions/cache@v4
+        uses: actions/cache@v3
         with:
           path: .commit-cache
-          key: commit-${{ matrix.branch }}-${{ steps.latest-commit.outputs.latest_commit }}
-          restore-keys: commit-${{ matrix.branch }}
+          key: commit-${{ matrix.branch }}-${{ github.run_id }}
 
       - name: Trigger Docker build
         if: steps.check-update.outputs.needs_build == 'true'

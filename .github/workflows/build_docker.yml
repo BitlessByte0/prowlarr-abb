@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ main ]
   repository_dispatch:
-    types: [docker-build-external]
+    types: [external-repo-update]
   workflow_dispatch: # Allow manual triggering
 
 permissions:

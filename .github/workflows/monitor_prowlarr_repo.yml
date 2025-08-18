@@ -1,67 +1,79 @@
-name: Monitor Official Prowlarr Repository
+name: Monitor External Repository
+
 on:
   schedule:
-    - cron: '*/30 * * * *'   # every 30 min; adjust as you like
-  workflow_dispatch:
-
-permissions:
-  actions: write
-  contents: read
-
+    # Check once daily at 6:00 AM UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch: # Allows manual triggering
 
 jobs:
   check-for-updates:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        branch: [master, develop]
-
+        branch: [master, development]
+    
     steps:
-      - name: Get latest commit from external repo
-        id: latest
+      - name: Checkout current repo
+        uses: actions/checkout@v4
+
+      - name: Restore commit cache
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: .commit-cache
+          key: commit-${{ matrix.branch }}
+
+      - name: Get last known commit from cache
+        id: last-commit
         run: |
-          set -euo pipefail
+          mkdir -p .commit-cache
+          if [ -f ".commit-cache/last-${{ matrix.branch }}.txt" ]; then
+            echo "last_commit=$(cat .commit-cache/last-${{ matrix.branch }}.txt)" >> $GITHUB_OUTPUT
+          else
+            echo "last_commit=" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Get latest commit from external repo
+        id: latest-commit
+        run: |
           EXTERNAL_REPO="Prowlarr/Prowlarr"
-          BRANCH="${{ matrix.branch }}"
           LATEST_COMMIT=$(curl -s \
             -H "Accept: application/vnd.github.v3+json" \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            "https://api.github.com/repos/$EXTERNAL_REPO/branches/$BRANCH" | jq -r '.commit.sha')
-          if [ "$LATEST_COMMIT" = "null" ] || [ -z "$LATEST_COMMIT" ]; then
-            echo "Could not resolve latest commit for $BRANCH" >&2
-            exit 1
-          fi
-          echo "sha=$LATEST_COMMIT" >> $GITHUB_OUTPUT
+            "https://api.github.com/repos/$EXTERNAL_REPO/branches/${{ matrix.branch }}" | \
+            jq -r '.commit.sha')
+          echo "latest_commit=$LATEST_COMMIT" >> $GITHUB_OUTPUT
 
-      - name: Restore seen-commit cache
-        id: cache-restore
-        uses: actions/cache/restore@v4
-        with:
-          path: .seen-commits/${{ matrix.branch }}
-          key: last-${{ matrix.branch }}-${{ steps.latest.outputs.sha }}
-          restore-keys: last-${{ matrix.branch }}-
-
-      - name: Decide if build is needed
-        id: decide
+      - name: Check if there's a new commit
+        id: check-update
         run: |
-          if [ "${{ steps.cache-restore.outputs.cache-hit }}" = "true" ]; then
-            echo "needs_build=false" >> $GITHUB_OUTPUT
-          else
+          if [ "${{ steps.last-commit.outputs.last_commit }}" != "${{ steps.latest-commit.outputs.latest_commit }}" ]; then
             echo "needs_build=true" >> $GITHUB_OUTPUT
+            echo "New commit detected in ${{ matrix.branch }}: ${{ steps.latest-commit.outputs.latest_commit }}"
+          else
+            echo "needs_build=false" >> $GITHUB_OUTPUT
+            echo "No new commits in ${{ matrix.branch }}"
           fi
 
-      - name: Save new seen-commit cache
-        if: steps.decide.outputs.needs_build == 'true'
-        uses: actions/cache/save@v4
+      - name: Update commit cache
+        if: steps.check-update.outputs.needs_build == 'true'
+        run: |
+          mkdir -p .commit-cache
+          echo "${{ steps.latest-commit.outputs.latest_commit }}" > .commit-cache/last-${{ matrix.branch }}.txt
+
+      - name: Save updated cache
+        if: steps.check-update.outputs.needs_build == 'true'
+        uses: actions/cache@v4
         with:
-          path: .seen-commits/${{ matrix.branch }}
-          key: last-${{ matrix.branch }}-${{ steps.latest.outputs.sha }}
+          path: .commit-cache
+          key: commit-${{ matrix.branch }}-${{ steps.latest-commit.outputs.latest_commit }}
+          restore-keys: commit-${{ matrix.branch }}
 
       - name: Trigger Docker build
         if: steps.check-update.outputs.needs_build == 'true'
         uses: peter-evans/repository-dispatch@v3
         with:
-          token: ${{ secrets.ACTIONS_PAT }}
+          token: ${{ secrets.PAT_REPO_ACCESS }}
           repository: ${{ github.repository }}
-          event-type: docker-build-external
+          event-type: external-repo-update
           client-payload: '{"branch": "${{ matrix.branch }}", "external_commit": "${{ steps.latest-commit.outputs.latest_commit }}"}'

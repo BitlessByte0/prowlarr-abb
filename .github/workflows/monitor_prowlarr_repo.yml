@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        branch: [master, development]
+        branch: [master, develop]  
 
     steps:
       - name: Checkout current repo
@@ -23,7 +23,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: .commit-cache
-          key: commit-${{ matrix.branch }}-${{ github.run_id }}
+          key: commit-${{ matrix.branch }}-${{ hashFiles('.commit-cache/last-${{ matrix.branch }}-commit.txt') }}
           restore-keys: |
             commit-${{ matrix.branch }}-
 
@@ -69,7 +69,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: .commit-cache
-          key: commit-${{ matrix.branch }}-${{ github.run_id }}
+          key: commit-${{ matrix.branch }}-${{ hashFiles('.commit-cache/last-${{ matrix.branch }}-commit.txt') }}
 
       - name: Trigger Docker build
         if: steps.check-update.outputs.needs_build == 'true'

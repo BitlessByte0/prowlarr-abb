@@ -41,9 +41,6 @@ jobs:
       run: |
         if [[ "${{ github.event_name }}" == "repository_dispatch" ]]; then
           EXTERNAL_BRANCH="${{ github.event.client_payload.branch }}"
-          if [[ "$EXTERNAL_BRANCH" == "development" ]]; then
-            EXTERNAL_BRANCH="develop"
-          fi
           
           if [[ "$EXTERNAL_BRANCH" == "master" && "${{ matrix.tag_config.tag_name }}" == "latest" ]] ||
              [[ "$EXTERNAL_BRANCH" == "develop" && "${{ matrix.tag_config.tag_name }}" == "develop" ]]; then
